@@ -1,6 +1,5 @@
 package com.meredithbayne.earthquaketracker;
 
-import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,11 +9,13 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 /**
- * Created by meredithbayne on 10/23/17.
+ * Created by meredithbayne on 10/22/17
+ * Implementation of adapter that will load the earthquake data into the RecyclerView
  */
 
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.ViewHolder> {
 
+    // Will be replaced with Earthquake data set
     private ArrayList<String> mDataSet;
 
     public MainAdapter(ArrayList<String> mDataSet) {
