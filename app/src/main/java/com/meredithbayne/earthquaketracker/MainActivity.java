@@ -1,42 +1,104 @@
 package com.meredithbayne.earthquaketracker;
 
+import android.graphics.Color;
+import android.os.AsyncTask;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
+import com.meredithbayne.earthquaketracker.util.EarthquakeJsonUtils;
+import com.meredithbayne.earthquaketracker.util.NetworkUtils;
+
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 
 /**
  * Created by meredithbayne on 10/21/17
+ * TODO add comments
  */
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView mRecyclerView;
-    private RecyclerView.LayoutManager mLayoutManager;
-    private RecyclerView.Adapter mAdapter;
+    private RecyclerView mEarthquakeRecyclerView;
+    private EarthquakeAdapter mEarthquakeAdapter;
+    private TextView mErrorMessage;
+    private ProgressBar mLoading;
 
-    // To be replaced by the earthquake data set
-    private ArrayList<String> mDataSet;
-
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mEarthquakeRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_earthquake);
+        mErrorMessage = (TextView) findViewById(R.id.error_message);
+        mLoading = (ProgressBar) findViewById(R.id.loading);
 
-        // Will be replaced by earthquake data set
-        mDataSet = new ArrayList<>();
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        mEarthquakeRecyclerView.setLayoutManager(layoutManager);
 
-        for (int i = 0; i < 100; i++) {
-            mDataSet.add("Yo I'm at : " + i);
+        mEarthquakeRecyclerView.setHasFixedSize(true);
+
+        mEarthquakeAdapter = new EarthquakeAdapter();
+        mEarthquakeRecyclerView.setAdapter(mEarthquakeAdapter);
+
+        loadEarthquakeData();
+    }
+
+    private void loadEarthquakeData() {
+        showEarthquakeDataView();
+        new EarthquakeTask().execute();
+    }
+
+    private void showEarthquakeDataView() {
+        mEarthquakeRecyclerView.setVisibility(View.VISIBLE);
+        mErrorMessage.setVisibility(View.INVISIBLE);
+    }
+
+    private void showErrorMessage() {
+        mEarthquakeRecyclerView.setVisibility(View.INVISIBLE);
+        mErrorMessage.setVisibility(View.VISIBLE);
+    }
+
+    public class EarthquakeTask extends AsyncTask<String, Void, String[]> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mLoading.setVisibility(View.VISIBLE);
         }
 
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setHasFixedSize(true);
-        mAdapter = new MainAdapter(mDataSet);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mRecyclerView.setAdapter(mAdapter);
+        @Override
+        protected String[] doInBackground(String... params) {
+            URL earthquakeRequestUrl = NetworkUtils.buildURl();
+
+            try {
+                String jsonResponse = NetworkUtils.getResponseFromHttpUrl(earthquakeRequestUrl);
+                String[] earthquakeStrings = EarthquakeJsonUtils.getEarthquakeStrings(MainActivity.this, jsonResponse);
+
+                return earthquakeStrings;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String[] earthquakeData) {
+            mLoading.setVisibility(View.INVISIBLE);
+            if (earthquakeData != null) {
+                showEarthquakeDataView();
+                mEarthquakeAdapter.setEarthquakeData(earthquakeData);
+            } else {
+                showErrorMessage();
+            }
+        }
     }
 }
