@@ -1,6 +1,7 @@
 package com.meredithbayne.earthquaketracker.util;
 
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +15,8 @@ import java.util.Scanner;
  */
 
 public class NetworkUtils {
+
+    private static final String TAG = NetworkUtils.class.getSimpleName();
 
     private static final String EARTHQUAKE_BASE_URL =
             "http://api.geonames.org/earthquakesJSON";
@@ -47,13 +50,16 @@ public class NetworkUtils {
                 .appendQueryParameter(WEST_PARAM, west)
                 .appendQueryParameter(USERNAME_PARAM, username)
                 .build();
+        URL earthquakeUrl = null;
         try {
-            URL earthquakeUrl = new URL(earthquakeUri.toString());
-            return earthquakeUrl;
+            earthquakeUrl = new URL(earthquakeUri.toString());
         } catch (MalformedURLException e) {
             e.printStackTrace();
-            return null;
         }
+
+        Log.v(TAG, "Built URI " + earthquakeUrl);
+
+        return earthquakeUrl;
     }
 
     public static String getResponseFromHttpUrl(URL url) throws IOException {

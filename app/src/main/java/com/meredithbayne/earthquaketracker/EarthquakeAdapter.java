@@ -1,16 +1,14 @@
 package com.meredithbayne.earthquaketracker;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 
 /**
  * Created by meredithbayne on 10/22/17
@@ -35,7 +33,11 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<EarthquakeAdapter.Ea
     @Override
     public void onBindViewHolder(EarthquakeAdapterViewHolder holder, int position) {
         String earthquakeEvent = mEarthquakeData[position];
-        holder.mEarthquakeTextView.setText(earthquakeEvent);
+
+        // Severity icon
+        holder.mEarthquakeImageView.setImageResource(R.drawable.ic_error_black_24dp);
+
+        // @TODO Replace with single views
     }
 
     @Override
@@ -48,11 +50,20 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<EarthquakeAdapter.Ea
     }
 
     public class EarthquakeAdapterViewHolder extends RecyclerView.ViewHolder {
-        private final TextView mEarthquakeTextView;
+        private final ImageView mEarthquakeImageView;
+        private final TextView mMagnitudeTextView;
+        private final TextView mLatitudeTextView;
+        private final TextView mLongitudeTextView;
+        private final TextView mDateTextView;
 
         public EarthquakeAdapterViewHolder(View itemView) {
             super(itemView);
-            mEarthquakeTextView = (TextView) itemView.findViewById(R.id.tv_earthquake_data);
+
+            mEarthquakeImageView = (ImageView) itemView.findViewById(R.id.severity_icon);
+            mMagnitudeTextView = (TextView) itemView.findViewById(R.id.earthquake_magnitude);
+            mLatitudeTextView = (TextView) itemView.findViewById(R.id.latitude);
+            mLongitudeTextView = (TextView) itemView.findViewById(R.id.longitude);
+            mDateTextView = (TextView) itemView.findViewById(R.id.date);
         }
     }
 

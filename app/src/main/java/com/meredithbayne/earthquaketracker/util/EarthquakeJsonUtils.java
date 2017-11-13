@@ -25,7 +25,8 @@ public final class EarthquakeJsonUtils {
         // Earthquake data is in the 'earthquakes' array
         final String GN_EARTHQUAKES = "earthquakes";
 
-        // TODO after formatting, add this : Date and time String
+        // Date
+        final String GN_DATE = "datetime";
         // Longitude
         final String GN_LONGITUDE = "lng";
         // Latitude
@@ -40,14 +41,17 @@ public final class EarthquakeJsonUtils {
         JSONArray earthquakeArray = earthquakeJson.getJSONArray(GN_EARTHQUAKES);
         parsedEarthquakeData = new String[earthquakeArray.length()];
 
-        // TODO add in date / time
         for (int i = 0; i < earthquakeArray.length(); i++) {
+            String datetime;
             String longitude;
             String latitude;
             String magnitude;
 
             // Individual earthquake event
             JSONObject earthquake = earthquakeArray.getJSONObject(i);
+            // Date
+            datetime = earthquake.getString(GN_DATE);
+            String date = EarthquakeDateUtil.getFriendlyDateTimeFormat(datetime);
             // Longitude
             longitude = earthquake.getString(GN_LONGITUDE);
             // Latitude
@@ -55,7 +59,7 @@ public final class EarthquakeJsonUtils {
             // Magnitude
             magnitude = earthquake.getString(GN_MAGNITUDE);
 
-            parsedEarthquakeData[i] = "Magnitude : " + magnitude + "\n" + "Coordinates : " + latitude + " / " + longitude;
+            parsedEarthquakeData[i] = "Magnitude : " + magnitude + "\n" + "Coordinates : " + latitude + " / " + longitude + "\n" + "Date : " + date;
         }
 
         return parsedEarthquakeData;

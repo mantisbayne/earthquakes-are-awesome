@@ -1,8 +1,6 @@
 package com.meredithbayne.earthquaketracker;
 
-import android.graphics.Color;
 import android.os.AsyncTask;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -14,11 +12,7 @@ import android.widget.TextView;
 import com.meredithbayne.earthquaketracker.util.EarthquakeJsonUtils;
 import com.meredithbayne.earthquaketracker.util.NetworkUtils;
 
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 
 /**
  * Created by meredithbayne on 10/21/17
