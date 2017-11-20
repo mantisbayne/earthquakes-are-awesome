@@ -1,22 +1,25 @@
 package com.meredithbayne.earthquaketracker;
 
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.meredithbayne.earthquaketracker.datamodel.Earthquake;
+import com.meredithbayne.earthquaketracker.util.API;
 import com.meredithbayne.earthquaketracker.util.EarthquakeJsonUtils;
-import com.meredithbayne.earthquaketracker.util.NetworkUtils;
+
+import org.json.JSONException;
 
 import java.net.URL;
+import java.util.List;
 
 /**
  * Created by meredithbayne on 10/21/17
- * TODO add comments
  */
 
 public class MainActivity extends AppCompatActivity {
@@ -61,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         mErrorMessage.setVisibility(View.VISIBLE);
     }
 
-    public class EarthquakeTask extends AsyncTask<String, Void, String[]> {
+    public class EarthquakeTask extends AsyncTask<String, String, String> {
 
         @Override
         protected void onPreExecute() {
@@ -70,14 +73,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected String[] doInBackground(String... params) {
-            URL earthquakeRequestUrl = NetworkUtils.buildURl();
+        protected String doInBackground(String... params) {
+            URL earthquakeRequestUrl = API.buildURl();
 
             try {
-                String jsonResponse = NetworkUtils.getResponseFromHttpUrl(earthquakeRequestUrl);
-                String[] earthquakeStrings = EarthquakeJsonUtils.getEarthquakeStrings(MainActivity.this, jsonResponse);
-
-                return earthquakeStrings;
+                String jsonResponse = API.getResponseFromHttpUrl(earthquakeRequestUrl);
+                return jsonResponse;
             } catch (Exception e) {
                 e.printStackTrace();
                 return null;
@@ -85,13 +86,16 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(String[] earthquakeData) {
+        protected void onPostExecute(String result) {
             mLoading.setVisibility(View.INVISIBLE);
-            if (earthquakeData != null) {
+            List<Earthquake> earthquakeData;
+
+            try {
                 showEarthquakeDataView();
+                earthquakeData = EarthquakeJsonUtils.getEarthquakeStrings(result);
                 mEarthquakeAdapter.setEarthquakeData(earthquakeData);
-            } else {
-                showErrorMessage();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
     }

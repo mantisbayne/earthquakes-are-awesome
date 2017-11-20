@@ -1,6 +1,7 @@
 package com.meredithbayne.earthquaketracker;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
+import com.meredithbayne.earthquaketracker.datamodel.Earthquake;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by meredithbayne on 10/22/17
@@ -18,7 +22,7 @@ import org.w3c.dom.Text;
 
 public class EarthquakeAdapter extends RecyclerView.Adapter<EarthquakeAdapter.EarthquakeAdapterViewHolder> {
 
-    private String[] mEarthquakeData;
+    private List<Earthquake> mEarthquakeData = Collections.emptyList();
 
     @Override
     public EarthquakeAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
@@ -32,12 +36,20 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<EarthquakeAdapter.Ea
 
     @Override
     public void onBindViewHolder(EarthquakeAdapterViewHolder holder, int position) {
-        String earthquakeEvent = mEarthquakeData[position];
+        Earthquake earthquake = mEarthquakeData.get(position);
 
         // Severity icon
         holder.mEarthquakeImageView.setImageResource(R.drawable.ic_error_black_24dp);
 
-        // @TODO Replace with single views
+        // Date, Magnitude, Longitude, and Latitude text views
+        holder.mDateTextView.setText(earthquake.getDatetime());
+        holder.mMagnitudeTextView.setText(Float.toString(earthquake.getMagnitude()));
+        holder.mLongitudeTextView.setText(Float.toString(earthquake.getLng()));
+        holder.mLatitudeTextView.setText(Float.toString(earthquake.getLat()));
+
+        if (mEarthquakeData.get(position).getMagnitude() >= 8.0) {
+            holder.mMagnitudeTextView.setTextColor(Color.RED);
+        }
     }
 
     @Override
@@ -46,7 +58,7 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<EarthquakeAdapter.Ea
             return 0;
         }
 
-        return mEarthquakeData.length;
+        return mEarthquakeData.size();
     }
 
     public class EarthquakeAdapterViewHolder extends RecyclerView.ViewHolder {
@@ -67,7 +79,7 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<EarthquakeAdapter.Ea
         }
     }
 
-    public void setEarthquakeData(String[] earthquakeData) {
+    public void setEarthquakeData(List<Earthquake> earthquakeData) {
         mEarthquakeData = earthquakeData;
         notifyDataSetChanged();
     }

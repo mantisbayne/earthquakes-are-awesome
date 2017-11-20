@@ -14,9 +14,9 @@ import java.util.Scanner;
  * Utilities to manage networking
  */
 
-public class NetworkUtils {
+public class API {
 
-    private static final String TAG = NetworkUtils.class.getSimpleName();
+    private static final String TAG = API.class.getSimpleName();
 
     private static final String EARTHQUAKE_BASE_URL =
             "http://api.geonames.org/earthquakesJSON";

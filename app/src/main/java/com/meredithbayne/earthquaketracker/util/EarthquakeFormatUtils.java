@@ -1,13 +1,36 @@
 package com.meredithbayne.earthquaketracker.util;
 
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by mbayne on 11/3/17.
  */
 
 public class EarthquakeFormatUtils {
-    // TODO handle date and time formatting
+    public static String getFriendlyDateTimeFormat(String datetime) {
+        DateFormat startDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
 
-    // TODO hadle latitude and longitude formatting
+        Date startDate;
 
-    // TODO if the magnitude is greater than 8 add an icon and change the color of the view to light red
+        String userDateString = null;
+
+        try {
+            startDate = startDateFormat.parse(datetime);
+            userDateString = dateFormat.format(startDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return userDateString;
+    }
+
+    public static String formatDecimalPlace(String value) {
+        DecimalFormat decimalFormat = new DecimalFormat("#.00");
+        return decimalFormat.format(Float.parseFloat(value));
+    }
 }

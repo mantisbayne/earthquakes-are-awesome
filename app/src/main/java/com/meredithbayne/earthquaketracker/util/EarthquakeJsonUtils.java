@@ -1,10 +1,13 @@
 package com.meredithbayne.earthquaketracker.util;
 
-import android.content.Context;
+import com.meredithbayne.earthquaketracker.datamodel.Earthquake;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by mbayne on 11/3/17.
@@ -20,11 +23,11 @@ public final class EarthquakeJsonUtils {
      *
      * @throws JSONException if parsing error occurs
      */
-    public static String[] getEarthquakeStrings(Context context, String earthquakeJsonString) throws JSONException {
+    public static List<Earthquake> getEarthquakeStrings(String earthquakeJsonString) throws JSONException {
+        List<Earthquake> earthquakeList = new ArrayList<>();
 
         // Earthquake data is in the 'earthquakes' array
         final String GN_EARTHQUAKES = "earthquakes";
-
         // Date
         final String GN_DATE = "datetime";
         // Longitude
@@ -34,12 +37,9 @@ public final class EarthquakeJsonUtils {
         // Magnitude
         final String GN_MAGNITUDE = "magnitude";
 
-        String[] parsedEarthquakeData = null;
-
         JSONObject earthquakeJson = new JSONObject(earthquakeJsonString);
 
         JSONArray earthquakeArray = earthquakeJson.getJSONArray(GN_EARTHQUAKES);
-        parsedEarthquakeData = new String[earthquakeArray.length()];
 
         for (int i = 0; i < earthquakeArray.length(); i++) {
             String datetime;
@@ -51,17 +51,20 @@ public final class EarthquakeJsonUtils {
             JSONObject earthquake = earthquakeArray.getJSONObject(i);
             // Date
             datetime = earthquake.getString(GN_DATE);
-            String date = EarthquakeDateUtil.getFriendlyDateTimeFormat(datetime);
+            String date = EarthquakeFormatUtils.getFriendlyDateTimeFormat(datetime);
             // Longitude
             longitude = earthquake.getString(GN_LONGITUDE);
+            String lng = EarthquakeFormatUtils.formatDecimalPlace(longitude);
             // Latitude
             latitude = earthquake.getString(GN_LATITUDE);
+            String lat = EarthquakeFormatUtils.formatDecimalPlace(latitude);
             // Magnitude
             magnitude = earthquake.getString(GN_MAGNITUDE);
 
-            parsedEarthquakeData[i] = "Magnitude : " + magnitude + "\n" + "Coordinates : " + latitude + " / " + longitude + "\n" + "Date : " + date;
+            // For each earthquake json object in the earthquakes json, add an Earthquake object
+            earthquakeList.add(new Earthquake(date, lng, magnitude, lat));
         }
 
-        return parsedEarthquakeData;
+        return earthquakeList;
     }
 }
