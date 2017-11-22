@@ -9,14 +9,12 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.meredithbayne.earthquaketracker.datamodel.Earthquake;
-import com.meredithbayne.earthquaketracker.util.API;
-import com.meredithbayne.earthquaketracker.util.EarthquakeJsonUtils;
-
-import org.json.JSONException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.meredithbayne.earthquaketracker.data.Earthquakes;
+import com.meredithbayne.earthquaketracker.data.API;
 
 import java.net.URL;
-import java.util.List;
 
 /**
  * Created by meredithbayne on 10/21/17
@@ -59,11 +57,6 @@ public class MainActivity extends AppCompatActivity {
         mErrorMessage.setVisibility(View.INVISIBLE);
     }
 
-    private void showErrorMessage() {
-        mEarthquakeRecyclerView.setVisibility(View.INVISIBLE);
-        mErrorMessage.setVisibility(View.VISIBLE);
-    }
-
     public class EarthquakeTask extends AsyncTask<String, String, String> {
 
         @Override
@@ -88,13 +81,14 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             mLoading.setVisibility(View.INVISIBLE);
-            List<Earthquake> earthquakeData;
+            Earthquakes earthquakes;
 
             try {
                 showEarthquakeDataView();
-                earthquakeData = EarthquakeJsonUtils.getEarthquakeStrings(result);
-                mEarthquakeAdapter.setEarthquakeData(earthquakeData);
-            } catch (JSONException e) {
+                Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss").create();
+                earthquakes = gson.fromJson(result, Earthquakes.class);
+                mEarthquakeAdapter.setEarthquakeData(earthquakes.getEarthquakes());
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

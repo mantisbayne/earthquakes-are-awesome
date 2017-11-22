@@ -1,4 +1,4 @@
-package com.meredithbayne.earthquaketracker.util;
+package com.meredithbayne.earthquaketracker.data;
 
 import android.net.Uri;
 import android.util.Log;

@@ -9,20 +9,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.meredithbayne.earthquaketracker.datamodel.Earthquake;
+import com.meredithbayne.earthquaketracker.data.Earthquake;
 
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by meredithbayne on 10/22/17
  * Implementation of adapter that will load the earthquake data into the RecyclerView
- * TODO add comments
  */
 
 public class EarthquakeAdapter extends RecyclerView.Adapter<EarthquakeAdapter.EarthquakeAdapterViewHolder> {
 
     private List<Earthquake> mEarthquakeData = Collections.emptyList();
+    private static final SimpleDateFormat DISPLAY_DATE_FORMAT = new SimpleDateFormat("MM/dd/yy");
+    private static final DecimalFormat DISPLAY_DECIMAL_FORMAT = new DecimalFormat("#.00");
 
     @Override
     public EarthquakeAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
@@ -37,18 +39,21 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<EarthquakeAdapter.Ea
     @Override
     public void onBindViewHolder(EarthquakeAdapterViewHolder holder, int position) {
         Earthquake earthquake = mEarthquakeData.get(position);
+        String magnitude = Float.toString(earthquake.getMagnitude());
 
         // Severity icon
         holder.mEarthquakeImageView.setImageResource(R.drawable.ic_error_black_24dp);
 
         // Date, Magnitude, Longitude, and Latitude text views
-        holder.mDateTextView.setText(earthquake.getDatetime());
-        holder.mMagnitudeTextView.setText(Float.toString(earthquake.getMagnitude()));
-        holder.mLongitudeTextView.setText(Float.toString(earthquake.getLng()));
-        holder.mLatitudeTextView.setText(Float.toString(earthquake.getLat()));
+        holder.mEarthquakeImageView.setVisibility(View.INVISIBLE);
+        holder.mDateTextView.setText(earthquake.formatDate(DISPLAY_DATE_FORMAT));
+        holder.mMagnitudeTextView.setText(magnitude);
+        holder.mLongitudeTextView.setText(earthquake.formatDecimal(DISPLAY_DECIMAL_FORMAT, earthquake.getLng()));
+        holder.mLatitudeTextView.setText(earthquake.formatDecimal(DISPLAY_DECIMAL_FORMAT, earthquake.getLat()));
 
         if (mEarthquakeData.get(position).getMagnitude() >= 8.0) {
             holder.mMagnitudeTextView.setTextColor(Color.RED);
+            holder.mEarthquakeImageView.setVisibility(View.VISIBLE);
         }
     }
 
