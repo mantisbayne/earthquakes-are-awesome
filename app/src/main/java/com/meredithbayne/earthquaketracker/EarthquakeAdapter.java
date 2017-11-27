@@ -1,7 +1,6 @@
 package com.meredithbayne.earthquaketracker;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,7 +51,6 @@ public class EarthquakeAdapter extends RecyclerView.Adapter<EarthquakeAdapter.Ea
         holder.mLatitudeTextView.setText(earthquake.formatDecimal(DISPLAY_DECIMAL_FORMAT, earthquake.getLat()));
 
         if (mEarthquakeData.get(position).getMagnitude() >= 8.0) {
-            holder.mMagnitudeTextView.setTextColor(Color.RED);
             holder.mEarthquakeImageView.setVisibility(View.VISIBLE);
         }
     }
